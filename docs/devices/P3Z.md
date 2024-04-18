@@ -45,11 +45,19 @@ pageClass: device-page
 This light supports the following features: `state`, `brightness`, `color_temp`, `color_xy`.
 - `state`: To control the state publish a message to topic `zigbee2mqtt/FRIENDLY_NAME/set` with payload `{"state": "ON"}`, `{"state": "OFF"}` or `{"state": "TOGGLE"}`. To read the state send a message to `zigbee2mqtt/FRIENDLY_NAME/get` with payload `{"state": ""}`.
 - `brightness`: To control the brightness publish a message to topic `zigbee2mqtt/FRIENDLY_NAME/set` with payload `{"brightness": VALUE}` where `VALUE` is a number between `0` and `254`. To read the brightness send a message to `zigbee2mqtt/FRIENDLY_NAME/get` with payload `{"brightness": ""}`.
+- `color_mode`: `xy` or `hs`. This topic changes when the `color` topic is set. It is `hs` when the HSB variant is used and `xy` for all other variants (x,y and hex, and RGB).
 - `color_temp`: To control the color temperature (in reciprocal megakelvin a.k.a. mired scale) publish a message to topic `zigbee2mqtt/FRIENDLY_NAME/set` with payload `{"color_temp": VALUE}` where `VALUE` is a number between `153` and `500`, the higher the warmer the color. To read the color temperature send a message to `zigbee2mqtt/FRIENDLY_NAME/get` with payload `{"color_temp": ""}`. Besides the numeric values the following values are accepted: `coolest`, `cool`, `neutral`, `warm`, `warmest`.
-- `color_xy`: To control the XY color (CIE 1931 color space) publish a message to topic `zigbee2mqtt/FRIENDLY_NAME/set` with payload `{"color": {"x": X_VALUE, "y": Y_VALUE}}` (e.g. `{"color":{"x":0.123,"y":0.123}}`). To read the XY color send a message to `zigbee2mqtt/FRIENDLY_NAME/get` with payload `{"color":{"x":"","y":""}}`. Alternatively it is possible to set the XY color via RGB:
-  - `{"color": {"r": R, "g": G, "b": B}}` e.g. `{"color":{"r":46,"g":102,"b":150}}`
-  - `{"color": {"rgb": "R,G,B"}}` e.g. `{"color":{"rgb":"46,102,150"}}`
-  - `{"color": {"hex": HEX}}` e.g. `{"color":{"hex":"#547CFF"}}`
+- `color`:
+  - To control the XY color (CIE 1931 color space) publish a message to topic `zigbee2mqtt/FRIENDLY_NAME/set` with payload `{"color": {"x": X_VALUE, "y": Y_VALUE}}` (e.g. `{"color":{"x":0.123,"y":0.123}}`). To read the XY color send a message to `zigbee2mqtt/FRIENDLY_NAME/get` with payload `{"color":{"x":"","y":""}}`.
+  - Alternatively it is possible to set the color via RGB, hexadecimal or HSB value:
+    - `{"color": {"r": R, "g": G, "b": B} }` e.g. `{"color": {"r":46,"g":102,"b":150} }` where R, G, and B are 0..255.
+    - `{"color": {"rgb": "R,G,B"} }` e.g. `{"color": {"rgb":"46,102,150"} }` where R, G, and B are 0..255.
+    - `{"color": {"hex": HEX} }` e.g. `{"color": {"hex":"#547CFF"} }`, see [Web colors](https://en.wikipedia.org/wiki/Web_colors). The hash sign ´#´ is optional.
+    - `{"color": {"hsb": "H,S,B"} }`e.g. `{ "color": { "hsb":"150, 37, 50"} }` where H is 0..359, S and B are 0..100.
+    - `{"color": {"h":H,"s":S,"b":B} }` e.g. `{"color": {"h":46,"s":100,"b":100} }`where H is 0..359, S and B are 0..100.
+- `color-hue`, 0..359: To read the hue send a message to `zigbee2mqtt/FRIENDLY_NAME/get` with payload `{"color-hue": ""}`.
+- `color-saturation`, 0..100: To read the saturation send a message to `zigbee2mqtt/FRIENDLY_NAME/get` with payload `{"color-saturation": ""}`.
+- `color-x` and `color-y`, a float value 0..1: To read the value send a message to `zigbee2mqtt/FRIENDLY_NAME/get` with payload `{"color-x": ""}` resp. `{"color-x": ""}`.
 
 #### On with timed off
 When setting the state to ON, it might be possible to specify an automatic shutoff after a certain amount of time. To do this add an additional property `on_time` to the payload which is the time in seconds the state should remain on.
@@ -108,4 +116,3 @@ Value can be found in the published state on the `linkquality` property.
 It's not possible to read (`/get`) or write (`/set`) this value.
 The minimal value is `0` and the maximum value is `255`.
 The unit of this value is `lqi`.
-
